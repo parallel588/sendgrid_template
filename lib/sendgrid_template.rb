@@ -19,8 +19,3 @@ module SendgridTemplate
     yield(configuration)
   end
 end
-
-SendgridTemplate.configure do |config|
-  config.login =  'luxfix'
-  config.password =  'Valent1n0'
-end
