@@ -1,9 +1,8 @@
 require "faraday"
 require 'faraday_middleware'
-require "sendgrid_template/version"
-require "sendgrid_template/configuration"
-require "sendgrid_template/templates"
-require "sendgrid_template/template"
+require "./sendgrid_template/version"
+require "./sendgrid_template/configuration"
+require "./sendgrid_template/template"
 
 module SendgridTemplate
 
