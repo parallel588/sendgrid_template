@@ -15,7 +15,7 @@ module SendgridTemplate
         h.adapter(Faraday.default_adapter)
         # h.request  :logger
         h.response :logger
-        # h.response :json
+        h.response :json
       end
       @conn.basic_auth(login, password)
       @conn
