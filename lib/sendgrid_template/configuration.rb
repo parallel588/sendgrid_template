@@ -11,11 +11,8 @@ module SendgridTemplate
 
     def connect
       @conn ||= Faraday.new(url: API_URL) do |h|
-        h.headers[:content_type] = "application/json"
+        h.headers[:content_type] = 'application/json'
         h.adapter(Faraday.default_adapter)
-        # h.request  :logger
-        h.response :logger
-        h.response :json
       end
       @conn.basic_auth(login, password)
       @conn

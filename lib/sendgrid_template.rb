@@ -1,5 +1,5 @@
 require 'faraday'
-require 'faraday_middleware'
+require 'multi_json'
 require 'sendgrid_template/version'
 require 'sendgrid_template/configuration'
 require 'sendgrid_template/template'
