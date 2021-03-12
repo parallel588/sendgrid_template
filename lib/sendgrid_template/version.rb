@@ -1,9 +1,14 @@
 module SendgridTemplate
-  VERSION = "0.0.3"
+  VERSION = "0.0.4"
 
   class Version < Struct.new(:id, :template_id,
                              :active, :name, :subject, :updated_at,
-                             :html_content, :plain_content, :user_id)
+                             :html_content, :plain_content, :user_id,
+                             :generate_plain_content,
+                             :editor,
+                             :thumbnail_url
+                            )
+
     def initialize(attrs = {})
       super(attrs['id'],
             attrs['template_id'],
@@ -13,7 +18,11 @@ module SendgridTemplate
             attrs['updated_at'],
             attrs['html_content'],
             attrs['plain_content'],
-            attrs['user_id'])
+            attrs['user_id'],
+            attrs['generate_plain_content'],
+            attrs['editor'],
+            attrs['thumbnail_url']
+           )
     end
 
     def attributes

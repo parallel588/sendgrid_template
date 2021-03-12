@@ -1,12 +1,10 @@
 module SendgridTemplate
   class Configuration
-    # API_URL = 'https://api.sendgrid.com'
-    API_URL = 'https://sendgrid.com'
-    attr_accessor :login, :password
+    API_URL = 'https://api.sendgrid.com'
+    attr_accessor :api_key
 
     def initialize(options = {})
-      @login = options[:login] if options.key?(:login)
-      @password = options[:password] if options.key?(:password)
+      @api_key = options[:api_key]
     end
 
     def connect
@@ -14,7 +12,8 @@ module SendgridTemplate
         h.headers[:content_type] = 'application/json'
         h.adapter(Faraday.default_adapter)
       end
-      @conn.basic_auth(login, password)
+
+      @conn.authorization :Bearer, @api_key
       @conn
     end
   end

@@ -1,6 +1,5 @@
 module SendgridTemplate
   class Template < Struct.new(:id, :name, :versions)
-
     def initialize(attrs = {})
       super(
         attrs['id'],
@@ -60,12 +59,18 @@ module SendgridTemplate
       end
     end
 
-
     class << self
-      def all(connect: nil)
+      def all(connect: nil, opts: {})
         conn = connect || SendgridTemplate.configuration.connect
-        resp = MultiJson.load(conn.get("/v3/templates").body)
-        resp['templates'].map do |attrs|
+        req_opts = {
+          page_size: 200,
+          generations: 'legacy,dynamic'
+        }.merge(opts)
+
+        resp = MultiJson.load(
+          conn.get('/v3/templates', req_opts).body
+        )
+        resp['result'].map do |attrs|
           Template.new(attrs)
         end
       end
