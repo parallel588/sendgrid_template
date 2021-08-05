@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 module SendgridTemplate
-  class Template < Struct.new(:id, :name, :versions)
+  Template = Struct.new(:id, :name, :versions) do
     def initialize(attrs = {})
       super(
         attrs['id'],
@@ -25,27 +27,19 @@ module SendgridTemplate
     def update
       response = SendgridTemplate.configuration.connect.patch("/v3/templates/#{id}") do |req|
         req.headers[:content_type] = 'application/json'
-        req.body = MultiJson.dump(attributes.reject{ |k, v| v.nil? || k.to_s[/id|_id\Z/] })
+        req.body = MultiJson.dump(attributes.reject { |k, v| v.nil? || k.to_s[/id|_id\Z/] })
       end
 
-      if response.success?
-        self.attributes = response.body
-      else
-        nil
-      end
+      self.attributes = response.body if response.success?
     end
 
     def create
       # create
-      response = SendgridTemplate.configuration.connect.post("/v3/templates/") do |req|
+      response = SendgridTemplate.configuration.connect.post('/v3/templates/') do |req|
         req.headers[:content_type] = 'application/json'
-        req.body = MultiJson.dump(attributes.reject{ |k, v| v.nil? || k.to_s[/id|_id\Z/]  })
+        req.body = MultiJson.dump(attributes.reject { |k, v| v.nil? || k.to_s[/id|_id\Z/] })
       end
-      if response.success?
-        self.attributes = response.body
-      else
-        nil
-      end
+      self.attributes = response.body if response.success?
     end
 
     def delete(force = false)
@@ -53,7 +47,8 @@ module SendgridTemplate
         SendgridTemplate.configuration.connect.delete("/v3/templates/#{id}").success?
       else
         return false unless force
-        self.versions.each(&:delete)
+
+        versions.each(&:delete)
         self.versions = []
         delete
       end
@@ -84,7 +79,6 @@ module SendgridTemplate
           # raise
         end
       end
-
     end
   end
 end

@@ -1,4 +1,6 @@
-require "spec_helper"
+# frozen_string_literal: true
+
+require 'spec_helper'
 
 describe SendgridTemplate do
   describe '.configure' do
@@ -8,7 +10,5 @@ describe SendgridTemplate do
         config.password = 'testpass'
       end
     end
-
   end
-
 end

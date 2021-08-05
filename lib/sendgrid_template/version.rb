@@ -1,14 +1,14 @@
+# frozen_string_literal: true
+
 module SendgridTemplate
-  VERSION = "0.0.4"
+  VERSION = '0.0.5'
 
-  class Version < Struct.new(:id, :template_id,
-                             :active, :name, :subject, :updated_at,
-                             :html_content, :plain_content, :user_id,
-                             :generate_plain_content,
-                             :editor,
-                             :thumbnail_url
-                            )
-
+  Version = Struct.new(:id, :template_id,
+                       :active, :name, :subject, :updated_at,
+                       :html_content, :plain_content, :user_id,
+                       :generate_plain_content,
+                       :editor,
+                       :thumbnail_url) do
     def initialize(attrs = {})
       super(attrs['id'],
             attrs['template_id'],
@@ -29,7 +29,7 @@ module SendgridTemplate
       Hash[each_pair.to_a]
     end
 
-    def attributes= attrs
+    def attributes=(attrs)
       attrs.each do |k, v|
         self[k.to_sym] = v if respond_to?(k)
       end
@@ -47,26 +47,18 @@ module SendgridTemplate
       # update
       response = SendgridTemplate.configuration.connect.patch("/v3/templates/#{v.template_id}/versions/#{v.id}") do |req|
         req.headers[:content_type] = 'application/json'
-        req.body = JSON.generate(v.attributes.reject{ |k, v| v.nil? || k.to_s[/id|_id\Z/] })
+        req.body = JSON.generate(v.attributes.reject { |k, v| v.nil? || k.to_s[/id|_id\Z/] })
       end
-      if response.success?
-        self.attributes = response.body
-      else
-        nil
-      end
+      self.attributes = response.body if response.success?
     end
 
     def create
       # create
       response = SendgridTemplate.configuration.connect.post("/v3/templates/#{template_id}/versions") do |req|
         req.headers[:content_type] = 'application/json'
-        req.body = JSON.generate(attributes.reject{ |k, v| v.nil? || k.to_s[/id|_id\Z/]  })
+        req.body = JSON.generate(attributes.reject { |k, v| v.nil? || k.to_s[/id|_id\Z/] })
       end
-      if response.success?
-        self.attributes = response.body
-      else
-        nil
-      end
+      self.attributes = response.body if response.success?
     end
 
     def delete
@@ -74,24 +66,15 @@ module SendgridTemplate
     end
 
     class << self
-      def find(template_id, version_id)
+      def find(template_id, _version_id)
         response = SendgridTemplate.configuration.connect.get("/v3/templates/#{template_id}/versions/#{id}")
-        if response.success?
-          new(response.body)
-        else
-          nil
-        end
+        new(response.body) if response.success?
       end
 
-      def activate(template_id, version_id)
+      def activate(template_id, _version_id)
         response = SendgridTemplate.configuration.connect.get("/v3/templates/#{template_id}/versions/#{id}/activate")
-        if response.success?
-          new(response.body)
-        else
-          nil
-        end
+        new(response.body) if response.success?
       end
-
     end
   end
 end
